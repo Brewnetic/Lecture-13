@@ -3,16 +3,15 @@
 // Social Media Live Stream System
 // ============================================
 
-import _________________;
-
-import _________________;
-
-import _________________;
+/* HashSet stores unique elements (no duplicates allowed).
+   Part of java.util, the standard utility collections package. */
+import java.util.HashSet;
+import java.util.Scanner;
+import java.util.concurrent.ArrayBlockingQueue;
 
 public class Lecture13 {
     
     public static void main(String[] args) {
-        // Create a Scanner object to read user input from the console
         Scanner scanner = new Scanner(System.in);
         
         System.out.println("========================================");
@@ -23,52 +22,42 @@ public class Lecture13 {
         // PART 1: Tracking Unique Viewers with HashSet
         // ============================================
         
-        // HashSet is perfect for tracking unique viewers in a live stream
-        // If a viewer refreshes their browser, they're still the same person
-        // HashSet automatically prevents duplicates - we never count the same viewer twice!
-        // Think of it like a VIP list at an exclusive event - each person can only be on it once
-        
-        // TODO: Create a HashSet<String> called activeViewers
-        // HINT: Use the 'new' keyword to instantiate the collection
-       
-        HashSet<String> activeViewers = _________________;
+        /* new HashSet<>() creates an empty set.
+           The <String> on the left declares what type the set holds.
+           The diamond <> on the right lets Java infer the type automatically.
+           No capacity argument is needed because HashSet grows as elements are added. */
+        HashSet<String> activeViewers = new HashSet<>();
         
         System.out.println("--- Stream Starting ---\n");
         
-        // TODO: Add "alex_gaming" to activeViewers using .add()
-    
+        /* .add() inserts an element into the set.
+           Returns true if the element was new, false if it was already present.
+           Duplicates are silently ignored (no exception is thrown). */
+        activeViewers.add("alex_gaming");
         
-        activeViewers._________________("alex_gaming");
+        activeViewers.add("luna_tech");
         
-        // TODO: Add "luna_tech" to activeViewers
-       
-        activeViewers._________________("luna_tech");
+        activeViewers.add("stream_pro");
         
-        // TODO: Add "stream_pro" to activeViewers
-        
-        activeViewers._________________("stream_pro");
-        
-        // TODO: Add "alex_gaming" AGAIN to activeViewers (duplicate!)
-        
-        boolean wasNewViewer = activeViewers._________________("alex_gaming");
+        /* "alex_gaming" is already in the set, so .add() returns false
+           and the set stays at 3 elements. wasNewViewer will be false. */
+        boolean wasNewViewer = activeViewers.add("alex_gaming");
         
         System.out.println("✓ Stream started! First viewers joined.\n");
         
-        // Display current viewers
         System.out.println("--- Current Viewers in Stream ---");
         
-        // TODO: Print the total number of unique viewers using .size()
-        
-        System.out.println("Unique viewers: " + activeViewers._________________());
+        /* .size() returns the number of unique elements currently in the set.
+           Even though .add() was called 4 times, size is 3 because the duplicate did not count. */
+        System.out.println("Unique viewers: " + activeViewers.size());
         
         System.out.println("\nViewer List:");
         
-        
-        // TODO: Fill in the for-each loop
-        
+        /* The enhanced for-each loop works on any Iterable, and HashSet qualifies.
+           The loop variable (viewer) takes the type of the set's elements (String).
+           Iteration order is unpredictable with HashSet, so output is not necessarily in insertion order. */
         int viewerNumber = 1;
-        for (String _________________ : _________________) {
-            // Print the current viewer
+        for (String viewer : activeViewers) {
             System.out.println("  " + viewerNumber + ". " + viewer);
             viewerNumber++;
         }
@@ -79,51 +68,37 @@ public class Lecture13 {
         // PART 2: Processing Chat Messages with ArrayBlockingQueue
         // ============================================
         
-        // ArrayBlockingQueue is perfect for managing chat messages during a stream
-        // Messages come in rapidly, but the host can only read them at a certain speed
-        // ArrayBlockingQueue automatically coordinates this:
-        // - If chat is overflowing, it limits how many messages (fixed capacity)
-        // - The host reads messages one by one (first in, first out - FIFO)
-        
         System.out.println("--- Starting Live Chat ---\n");
         
-        // TODO: Create an ArrayBlockingQueue<String> with capacity 5 called chatQueue
+        /* new ArrayBlockingQueue<>(5) creates a queue with a fixed capacity of 5.
+           Unlike HashSet, capacity must be specified at creation and cannot grow.
+           The <String> type parameter means this queue holds String messages. */
+        ArrayBlockingQueue<String> chatQueue = new ArrayBlockingQueue<>(5);
         
-
-        ArrayBlockingQueue<String> chatQueue = _________________;
+        /* .offer() adds an element to the END of the queue (the tail).
+           Returns true if added successfully, false if the queue is already full.
+           It does not block or throw an exception when the queue is full. */
+        chatQueue.offer("@alex_gaming: This stream is awesome!");
         
+        chatQueue.offer("@luna_tech: Love the content!");
         
-        
-        // TODO: Add first chat message using .offer()
-        
-
-        chatQueue._________________("@alex_gaming: This stream is awesome!");
-        
-        // TODO: Add second chat message
-        
-        chatQueue._________________("@luna_tech: Love the content!");
-        
-        // TODO: Add third chat message
-       
-        chatQueue._________________("@stream_pro: When's the next episode?");
+        chatQueue.offer("@stream_pro: When's the next episode?");
         
         System.out.println("✓ First chat messages received!\n");
         
-        // Display chat queue status
         System.out.println("--- Chat Queue Status ---");
         
-        // TODO: Print total messages in queue using .size()
-        
-        System.out.println("Messages in queue: " + chatQueue._________________());
+        /* .size() on ArrayBlockingQueue returns the current number of elements,
+           not the capacity. Capacity is always 5; size starts at 0 and grows with each .offer(). */
+        System.out.println("Messages in queue: " + chatQueue.size());
         
         System.out.println("\nPending Messages:");
         
-        
-        // TODO: Fill in the for-each loop to display messages
-        
+        /* Iterating with for-each does NOT remove elements from the queue.
+           ArrayBlockingQueue maintains FIFO order, so iteration goes front to back.
+           The loop variable (message) holds each String element in turn. */
         int messageNum = 1;
-        for (String _________________ : _________________) {
-            // Print the current message
+        for (String message : chatQueue) {
             System.out.println("  " + messageNum + ". " + message);
             messageNum++;
         }
@@ -134,51 +109,43 @@ public class Lecture13 {
         // PART 3: Host Reading and Responding to Chat
         // ============================================
         
-        // The stream host reads chat messages one by one from the queue
-        // As each message is read (removed), the next message moves to the front
-        
         System.out.println("--- Host Reading Chat ---");
         
-        // The host reads and responds to a message
         System.out.print("Host: I'll respond to a chat message. Reveal it? (y/n): ");
         String readChat = scanner.nextLine().toLowerCase();
         
         if (readChat.equals("y")) {
-            // TODO: Remove and process the first message using .poll()
-            
-            String firstMessage = chatQueue._________________();
+            /* .poll() removes and returns the element at the FRONT of the queue (the head).
+               This is what makes ArrayBlockingQueue a true FIFO structure:
+               the first message added is the first message retrieved.
+               Returns null if the queue is empty (never throws an exception). */
+            String firstMessage = chatQueue.poll();
             
             if (firstMessage != null) {
                 System.out.println("\n✓ Host reading: " + firstMessage);
                 System.out.println("✓ Message removed from queue!\n");
             } else {
-                // Queue is empty - no messages to read
                 System.out.println("✓ No messages in queue!\n");
             }
         }
         
-        // Show updated queue after host read a message
         System.out.println("--- Updated Chat Queue ---");
         
-        // TODO: Print remaining messages count using .size()
+        /* After .poll() removed one element, size decreased by 1.
+           If the user skipped reading (entered "n"), size is still 3. */
+        System.out.println("Messages remaining: " + chatQueue.size());
         
-        System.out.println("Messages remaining: " + chatQueue._________________());
-        
-        // Display remaining messages
         if (!chatQueue.isEmpty()) {
             System.out.println("\nRemaining Messages:");
             
-            // Show remaining messages in queue
+            /* Same for-each pattern as before (iterates without removing).
+               The queue now has 2 elements if a message was polled, or 3 if not. */
             int remainingNum = 1;
-            // TODO: Fill in the for-each loop
-            
-            for (String _________________ : _________________) {
-                // Print the current remaining message
+            for (String message : chatQueue) {
                 System.out.println("  " + remainingNum + ". " + message);
                 remainingNum++;
             }
         } else {
-            // Queue is empty
             System.out.println("Chat queue is EMPTY!");
         }
         
@@ -188,7 +155,6 @@ public class Lecture13 {
         System.out.println("Unique viewers who watched: " + activeViewers.size());
         System.out.println("Messages processed: " + (3 - chatQueue.size()));
         
-        // Close the Scanner when done (good practice for resource management)
         scanner.close();
     }
 }
@@ -198,47 +164,52 @@ public class Lecture13 {
 // ============================================
 /*
  * HashSet Methods Used in This Example:
- * 
- * .add(E element)           - Add unique element to set
- *                             Returns: boolean (true if new, false if duplicate)
- *                             Time: Very fast - O(1) average
- *                             Note: Automatically prevents duplicates!
- * 
- * .contains(E element)      - Check if element exists in set
- *                             Returns: boolean (true if found, false if not)
- *                             Time: Very fast - O(1) average
- * 
- * .size()                   - Get number of unique elements
- *                             Returns: int (count of elements)
- *                             Time: Very fast - O(1)
- * 
- * .remove(E element)        - Remove specific element
- *                             Returns: boolean (true if found and removed)
- *                             Time: Very fast - O(1) average
- * 
- * .isEmpty()                - Check if set is empty
- *                             Returns: boolean (true if size is 0)
- *                             Time: Very fast - O(1)
- * 
+ *
+ * .add(E element)
+ *     Adds a unique element to the set.
+ *     Returns true if the element was new, false if it was a duplicate.
+ *     Duplicates are automatically ignored (no exception thrown).
+ *
+ * .contains(E element)
+ *     Checks whether an element exists in the set.
+ *     Returns true if found, false if not.
+ *     Very fast: O(1) average time.
+ *
+ * .size()
+ *     Returns the number of unique elements currently in the set.
+ *     Very fast: O(1).
+ *
+ * .remove(E element)
+ *     Removes a specific element from the set.
+ *     Returns true if found and removed, false if not present.
+ *     Very fast: O(1) average time.
+ *
+ * .isEmpty()
+ *     Returns true if the set contains no elements, false otherwise.
+ *     Very fast: O(1).
+ *
+ *
  * Why HashSet for Live Stream Viewers?
- * ✓ Automatically prevents counting same viewer twice (duplicate prevention!)
- * ✓ Very fast lookup - can check "is this viewer already watching?" instantly
+ * ✓ Automatically prevents counting the same viewer twice
+ * ✓ Very fast lookup to check "is this viewer already watching?"
  * ✓ Efficient for frequently changing membership (viewers join/leave/rejoin)
- * ✓ No order needed - we just care about UNIQUE viewers, not order they joined
- * 
- * HashSet Key Concept:
- * - UNIQUE DATA - Each element can only appear once
- * - NO DUPLICATES - Trying to add duplicate returns false and does nothing
- * - NO ORDERING - Elements stored in random order (unlike ArrayList)
- * - FAST OPERATIONS - Add/remove/check all run in constant time O(1)
- * 
+ * ✓ No ordering needed; the goal is tracking UNIQUE viewers only
+ *
+ *
+ * HashSet Key Concepts:
+ *     UNIQUE DATA         Each element can only appear once.
+ *     NO DUPLICATES       Trying to add a duplicate returns false and does nothing.
+ *     NO ORDERING         Elements are stored in an unpredictable order (unlike ArrayList).
+ *     FAST OPERATIONS     Add/remove/check all run in O(1) constant time.
+ *
+ *
  * Real-World Uses of HashSet:
- * - Live stream unique viewer tracking (this example!)
- * - Social media unique followers (prevent double-counting)
- * - Email contact lists (no duplicate emails)
- * - Server unique IP addresses (each IP counted once)
- * - Game achievements (each achievement earned only once)
- * - Dictionary of unique words (spell checker)
+ *     Live stream unique viewer tracking (this example)
+ *     Social media unique followers (prevent double-counting)
+ *     Email contact lists (no duplicate emails)
+ *     Server unique IP addresses (each IP counted once)
+ *     Game achievements (each achievement earned only once)
+ *     Dictionary of unique words (spell checker)
  */
 
 
@@ -247,54 +218,58 @@ public class Lecture13 {
 // ============================================
 /*
  * ArrayBlockingQueue Methods Used in This Example:
- * 
- * .offer(E element)         - Add element to queue (end)
- *                             Returns: boolean (true if added, false if queue full)
- *                             Time: Very fast - O(1)
- *                             Note: Does NOT wait - just rejects if full
- * 
- * .poll()                   - Remove and return first element
- *                             Returns: Element if available, null if queue empty
- *                             Time: Very fast - O(1)
- *                             Note: FIFO order - first in, first out
- * 
- * .peek()                   - View first element without removing
- *                             Returns: Element if available, null if queue empty
- *                             Time: Very fast - O(1)
- *                             Note: Useful for checking next item without removing
- * 
- * .size()                   - Get number of elements currently in queue
- *                             Returns: int (current count, not capacity)
- *                             Time: Very fast - O(1)
- * 
- * .isEmpty()                - Check if queue is empty
- *                             Returns: boolean (true if size is 0)
- *                             Time: Very fast - O(1)
- * 
+ *
+ * .offer(E element)
+ *     Adds an element to the END of the queue (the tail).
+ *     Returns true if added, false if the queue is already at capacity.
+ *     Does NOT block or wait; simply rejects the element if full.
+ *
+ * .poll()
+ *     Removes and returns the element at the FRONT of the queue (the head).
+ *     Returns null if the queue is empty (no exception thrown).
+ *     Processes elements in FIFO order: first in, first out.
+ *
+ * .peek()
+ *     Returns the element at the front without removing it.
+ *     Returns null if the queue is empty.
+ *     Useful for checking the next item before deciding to remove it.
+ *
+ * .size()
+ *     Returns the current number of elements in the queue (not the capacity).
+ *     Very fast: O(1).
+ *
+ * .isEmpty()
+ *     Returns true if the queue contains no elements, false otherwise.
+ *     Very fast: O(1).
+ *
+ *
  * Why ArrayBlockingQueue for Chat Messages?
- * ✓ Fixed capacity prevents memory overflow (max 5 messages won't crash system)
- * ✓ FIFO ordering - messages read in exact order they arrived
- * ✓ Thread-safe for real streaming systems (multiple threads safely add/read)
- * ✓ Coordination - producer (chat) and consumer (host reading) work together
- * ✓ Fair processing - no message skipped or prioritized unfairly
- * 
- * ArrayBlockingQueue Key Concept:
- * - QUEUE BEHAVIOR - First In, First Out (FIFO)
- * - FIXED CAPACITY - Set when created, doesn't grow (prevents overflow)
- * - THREAD-SAFE - Multiple threads can safely add/remove simultaneously
- * - BLOCKING - Can wait (with timeout) if full (offer returns false instead)
- * 
+ * ✓ Fixed capacity prevents memory overflow (max 5 messages)
+ * ✓ FIFO ordering ensures messages are read in the exact order they arrived
+ * ✓ Thread-safe for real streaming systems with multiple threads
+ * ✓ Coordinates the producer (viewers sending chat) and consumer (host reading)
+ * ✓ Fair processing so no message is skipped or prioritized unfairly
+ *
+ *
+ * ArrayBlockingQueue Key Concepts:
+ *     QUEUE BEHAVIOR     First In, First Out (FIFO)
+ *     FIXED CAPACITY     Set when created and does not grow (prevents overflow)
+ *     THREAD-SAFE        Multiple threads can safely add/remove simultaneously
+ *     NON-BLOCKING       .offer() returns false instead of waiting when full
+ *
+ *
  * Real-World Uses of ArrayBlockingQueue:
- * - Live chat message processing (this example!)
- * - Server request handling with limited worker threads
- * - Game server player action queue (process actions in order)
- * - Email queue system (limited batch processing)
- * - Print job queue (manage printing in order)
- * 
- * IMPORTANT DISTINCTION:
- * - .offer() returns boolean - doesn't wait if full
- * - .put() would wait (blocking) - but we're not using it in this example
- * - For this introductory class, .offer() is simpler to understand
+ *     Live chat message processing (this example)
+ *     Server request handling with limited worker threads
+ *     Game server player action queues (process actions in order)
+ *     Email queue systems (limited batch processing)
+ *     Print job queues (manage printing in order)
+ *
+ *
+ * Important Distinction:
+ *     .offer() returns a boolean and does not wait if full.
+ *     .put() would block and wait until space is available.
+ *     This course uses .offer() because the non-blocking behavior is easier to reason about.
  */
 
 
@@ -303,24 +278,25 @@ public class Lecture13 {
 // ============================================
 /*
  * Both are Collections Framework classes but serve different purposes:
- * 
- * HashSet:                          ArrayBlockingQueue:
- * - Purpose: Unique values         - Purpose: Ordered processing queue
- * - Order: Random/unordered        - Order: FIFO (First In, First Out)
- * - Duplicates: Prevented          - Duplicates: Allowed
- * - Capacity: Unlimited            - Capacity: Fixed at creation
- * - Best for: Membership tracking  - Best for: Message/task processing
- * - Thread-safe: No (single-thread)- Thread-safe: Yes (multi-thread)
- * 
+ *
+ *                        HashSet                    ArrayBlockingQueue
+ * Purpose:               Unique value tracking       Ordered processing queue
+ * Order:                 Random/unordered            FIFO (First In, First Out)
+ * Duplicates:            Prevented automatically     Allowed
+ * Capacity:              Unlimited (grows freely)    Fixed at creation
+ * Best for:              Membership tracking         Message/task processing
+ * Thread-safe:           No (single-thread use)      Yes (multi-thread safe)
+ *
+ *
  * When to use HashSet:
- * - Need unique/distinct items
- * - Order doesn't matter
- * - Fast lookup/duplicate check important
- * - Single-threaded application
- * 
+ *     Need unique/distinct items
+ *     Order does not matter
+ *     Fast lookup or duplicate checking is important
+ *     Single-threaded application
+ *
  * When to use ArrayBlockingQueue:
- * - Need FIFO processing (tasks/messages)
- * - Want to limit capacity (prevent overflow)
- * - Multiple threads need safe coordination
- * - Order of processing matters
+ *     Need FIFO processing (tasks or messages)
+ *     Want to limit capacity to prevent overflow
+ *     Multiple threads need safe coordination
+ *     Order of processing matters
  */
